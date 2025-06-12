@@ -1,15 +1,73 @@
-// src/features/StrategyVisualizer/sections/SummaryMetricsSection.jsx
+// src/features/StrategyVisualizer/sections/SummaryMetricsSection.tsx
 import React, { useMemo, useState } from "react";
 import MetricItem from "../components/MetricItem";
 import Button from "../../../components/Button/Button";
 import "./SummaryMetricsSection.scss";
 
+// --- Type Definitions ---
+
+export type BuySell = "Buy" | "Sell";
+export type OptionType = "CE" | "PE";
+export type LegType = "option" | "future";
+
+export interface StrategyLeg {
+  token: string;
+  price: number | string;
+  lots: number;
+  lotSize: number;
+  buySell: BuySell;
+  legType: LegType;
+  strike?: number | string;
+  optionType?: OptionType;
+  selected?: boolean;
+  [key: string]: any;
+}
+
+export interface Instrument {
+  token: string;
+  legTypeDb?: string;
+  lastPrice?: string | number;
+  [key: string]: any;
+}
+
+export interface PayoffGraphPoint {
+  spot: number;
+  pnlAtExpiry: number;
+}
+
+export interface PayoffGraphData {
+  points?: PayoffGraphPoint[];
+  [key: string]: any;
+}
+
+export interface SummaryMetricsSectionProps {
+  strategyLegs: StrategyLeg[];
+  underlyingSpotPrice: number | null;
+  getInstrumentByToken?: (token: string) => Instrument | undefined;
+  payoffGraphData?: PayoffGraphData;
+}
+
+// --- Constants ---
+
 const NOT_APPLICABLE = "N/A";
 const UNLIMITED = "Unlimited";
 const API_REQUIRED = "API Req.";
 
+// --- Helper Functions ---
+
 // This helper function is correct and does not need changes.
-const formatDisplayValue = (value, type = "number", options = {}) => {
+const formatDisplayValue = (
+  value: number | string,
+  type: string = "number",
+  options: {
+    digits?: number;
+    prefix?: string;
+    suffix?: string;
+    showSign?: boolean;
+    useAbsolute?: boolean;
+    noPrefixForZero?: boolean;
+  } = {}
+): string => {
   const {
     digits = 2,
     prefix = "₹",
@@ -50,8 +108,8 @@ const formatDisplayValue = (value, type = "number", options = {}) => {
  * Helper function to calculate P&L of a leg at a specific spot price at expiry.
  * This is used to find the theoretical max loss/profit at spot=0.
  */
-const calculateTheoreticalLegPnl = (leg, spotAtExpiry) => {
-  const entryPrice = parseFloat(leg.price);
+const calculateTheoreticalLegPnl = (leg: StrategyLeg, spotAtExpiry: number): number => {
+  const entryPrice = parseFloat(String(leg.price));
   if (isNaN(entryPrice)) return 0;
 
   const contractMultiplier =
@@ -74,7 +132,9 @@ const calculateTheoreticalLegPnl = (leg, spotAtExpiry) => {
   return pnlPerShare * contractMultiplier * direction;
 };
 
-const SummaryMetricsSection = ({
+// --- Main Component ---
+
+const SummaryMetricsSection: React.FC<SummaryMetricsSectionProps> = ({
   strategyLegs,
   underlyingSpotPrice,
   getInstrumentByToken,
@@ -90,12 +150,11 @@ const SummaryMetricsSection = ({
     breakevenPoints,
     riskRewardRatio,
   } = useMemo(() => {
-    // This section for IV/TV and filtering legs is correct and remains unchanged.
     let totalIntrinsicForOptions = 0,
       totalTimeValueForOptions = 0;
-    let rawMaxProfitFromGraph = NOT_APPLICABLE,
-      rawMaxLossFromGraph = NOT_APPLICABLE;
-    const breakevens = new Set();
+    let rawMaxProfitFromGraph: number | string = NOT_APPLICABLE,
+      rawMaxLossFromGraph: number | string = NOT_APPLICABLE;
+    const breakevens = new Set<string>();
 
     const allSelectedStrategyLegs = Array.isArray(strategyLegs)
       ? strategyLegs.filter(
@@ -113,7 +172,7 @@ const SummaryMetricsSection = ({
         leg.legType === "option" &&
         leg.strike !== undefined &&
         !isNaN(Number(leg.strike)) &&
-        ["CE", "PE"].includes(leg.optionType)
+        ["CE", "PE"].includes(leg.optionType as string)
     );
 
     if (
@@ -130,13 +189,13 @@ const SummaryMetricsSection = ({
             ? Math.max(0, currentSpot - legStrike)
             : Math.max(0, legStrike - currentSpot);
         const instrumentDetails = getInstrumentByToken?.(leg.token);
-        let marketPricePerShare = parseFloat(leg.price);
+        let marketPricePerShare = parseFloat(String(leg.price));
         if (
           instrumentDetails &&
           instrumentDetails.legTypeDb === "option" &&
           instrumentDetails.lastPrice !== undefined
         )
-          marketPricePerShare = parseFloat(instrumentDetails.lastPrice);
+          marketPricePerShare = parseFloat(String(instrumentDetails.lastPrice));
         const timeValuePerShare = marketPricePerShare - intrinsicPerShare;
         const totalContractsForLeg = leg.lots * leg.lotSize;
         const directionMultiplier = leg.buySell === "Buy" ? 1 : -1;
@@ -147,7 +206,7 @@ const SummaryMetricsSection = ({
       });
     }
 
-    // This logic for analytical unlimited P&L detection is correct and remains unchanged.
+    // Analytical unlimited P&L detection
     let analyticallyUnlimitedProfit = false,
       analyticallyUnlimitedLoss = false;
     if (allSelectedStrategyLegs.length > 0) {
@@ -185,8 +244,8 @@ const SummaryMetricsSection = ({
         analyticallyUnlimitedLoss = true;
     }
 
-    // This logic for getting graph-based P&L and breakevens is correct and remains unchanged.
-    if (payoffGraphData?.points?.length > 0) {
+    // Graph-based P&L and breakevens
+    if (payoffGraphData?.points?.length && payoffGraphData.points.length > 0) {
       const pnlValues = payoffGraphData.points
         .map((p) => p.pnlAtExpiry)
         .filter((pnl) => typeof pnl === "number" && !isNaN(pnl));
@@ -244,10 +303,13 @@ const SummaryMetricsSection = ({
         theoreticalProfitAtZero += calculateTheoreticalLegPnl(leg, 0);
       });
       // The true max profit is the HIGHER of the two values.
-      finalMaxProfit = Math.max(rawMaxProfitFromGraph, theoreticalProfitAtZero);
+      finalMaxProfit = Math.max(
+        typeof rawMaxProfitFromGraph === "number" ? rawMaxProfitFromGraph : Number.NEGATIVE_INFINITY,
+        theoreticalProfitAtZero
+      );
     }
 
-    // ** FIX FOR MAX LOSS (from previous request) **
+    // ** FIX FOR MAX LOSS **
     // If loss is NOT unlimited, calculate the theoretical loss at spot=0
     // and see if it's worse than what's on the graph. This is for long futures/calls.
     if (!analyticallyUnlimitedLoss && allSelectedStrategyLegs.length > 0) {
@@ -256,17 +318,18 @@ const SummaryMetricsSection = ({
         theoreticalLossAtZero += calculateTheoreticalLegPnl(leg, 0);
       });
       // The true max loss is the LOWER (more negative) of the two values.
-      finalMaxLoss = Math.min(rawMaxLossFromGraph, theoreticalLossAtZero);
+      finalMaxLoss = Math.min(
+        typeof rawMaxLossFromGraph === "number" ? rawMaxLossFromGraph : Number.POSITIVE_INFINITY,
+        theoreticalLossAtZero
+      );
     }
 
-    // Finally, ensure the analytical UNLIMITED flags override everything.
+    // Ensure the analytical UNLIMITED flags override everything.
     if (analyticallyUnlimitedProfit) finalMaxProfit = UNLIMITED;
     if (analyticallyUnlimitedLoss) finalMaxLoss = UNLIMITED;
 
-    // --- END OF FIX ---
-
-    // Risk/Reward ratio logic is correct and remains unchanged.
-    let ratio = NOT_APPLICABLE;
+    // Risk/Reward ratio logic
+    let ratio: string = NOT_APPLICABLE;
     const numericFinalMaxProfit =
       finalMaxProfit === UNLIMITED
         ? Infinity
@@ -334,7 +397,6 @@ const SummaryMetricsSection = ({
     showRewardRisk,
   ]);
 
-  // The JSX part of your component remains entirely unchanged.
   return (
     <section className="sv-summary-metrics-section">
       <div className="metrics-grid">
@@ -417,4 +479,4 @@ const SummaryMetricsSection = ({
   );
 };
 
-export default React.memo(SummaryMetricsSection);
+export default SummaryMetricsSection;

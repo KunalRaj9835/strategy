@@ -1,4 +1,4 @@
-// src/features/StrategyVisualizer/sections/PayoffChartSection.jsx
+// src/features/StrategyVisualizer/sections/PayoffChartSection.tsx
 import React, { useMemo, useCallback, useState } from "react";
 import StrategyTabs from "../components/StrategyTabs";
 import Button from "../../../components/Button/Button";
@@ -7,19 +7,76 @@ import Checkbox from "../../../components/Checkbox/Checkbox";
 import GreeksTable from "../components/GreeksTable";
 import PnLTable from "../components/PnLTable";
 import PayoffTable from "../components/PayoffTable";
-import { generatePayoffTableData } from "../../utils/payoffTableUtils"; // Utility for P&L Matrix
+import { generatePayoffTableData } from "../../utils/payoffTableUtils";
 import Select from "../../../components/Select/Select";
 import { usePayoffChartControls } from "../../../hooks/usePayoffChartControls";
 import { SPOT_SLIDER_STEP, PAYOFF_TABLE_INTERVAL_STEP } from "../../../config";
-import { calculateProjectedStrategyData } from "../../utils/payoffDataCalculator"; // Utility for P&L/Greeks Table
+import { calculateProjectedStrategyData } from "../../utils/payoffDataCalculator";
 import { NOT_APPLICABLE } from "../../utils/formatters";
-import PayoffChart from "../components/PayoffChart"; // The actual chart component
+import PayoffChart from "../components/PayoffChart";
 import "./PayoffChartSection.scss";
+
+// --- Type Definitions ---
+
+type BuySell = "Buy" | "Sell";
+type OptionType = "CE" | "PE";
+type LegType = "option" | "future";
+
+interface StrategyLeg {
+  id: string;
+  legType: LegType;
+  token: string;
+  price: number;
+  lots: number;
+  lotSize: number;
+  buySell: BuySell;
+  strike?: number | string;
+  optionType?: OptionType;
+  expiry?: string;
+  iv?: number;
+  [key: string]: any;
+}
+
+interface Instrument {
+  token: string;
+  expiry?: string;
+  expiryDate?: string;
+  lastPrice?: number | string;
+  [key: string]: any;
+}
+
+interface PayoffChartSectionProps {
+  activeChartTab: string;
+  onChartTabChange: (tab: string) => void;
+  niftyTarget: string;
+  onNiftyTargetChange: (val: string) => void;
+  onResetNiftyTarget: () => void;
+  targetDate: string;
+  onTargetDateChange: (val: string) => void;
+  strategyLegs: StrategyLeg[];
+  getInstrumentByToken: (token: string) => Instrument | undefined;
+  liveInstrumentChainArray: Instrument[];
+  currentUnderlying: string;
+  riskFreeRate: number;
+  multiplyByLotSize: boolean;
+  onMultiplyByLotSizeChange: (checked: boolean) => void;
+  multiplyByNumLots: boolean;
+  onMultiplyByNumLotsChange: (checked: boolean) => void;
+  getScenarioIV: (token: string) => number;
+  underlyingSpotPrice: number | null | undefined;
+  handleSdDaysChange: (days: number) => void;
+  sdDays: number;
+  multiplier?: number;
+}
+
+// --- Constants ---
 
 const SUB_TAB_CHART_VIEW = "subTabChartView";
 const SUB_TAB_PAYOFF_TABLE_VIEW = "subTabPayoffTableView";
 
-const PayoffChartSection = ({
+// --- Main Component ---
+
+const PayoffChartSection: React.FC<PayoffChartSectionProps> = ({
   activeChartTab,
   onChartTabChange,
   niftyTarget,
@@ -27,28 +84,25 @@ const PayoffChartSection = ({
   onResetNiftyTarget,
   targetDate,
   onTargetDateChange,
-  strategyLegs, // Existing (will contain legType)
-  getInstrumentByToken, // MODIFIED: Was getOptionByToken
-  liveInstrumentChainArray, // MODIFIED: Was liveOptionChainMap, now an array of all instruments
+  strategyLegs,
+  getInstrumentByToken,
+  liveInstrumentChainArray,
   currentUnderlying,
   riskFreeRate,
   multiplyByLotSize,
   onMultiplyByLotSizeChange,
   multiplyByNumLots,
   onMultiplyByNumLotsChange,
-  getScenarioIV, // For options
-  underlyingSpotPrice, // Live spot price
+  getScenarioIV,
+  underlyingSpotPrice,
   handleSdDaysChange,
   sdDays,
   multiplier = 1,
 }) => {
-  const [activePayoffGraphSubTab, setActivePayoffGraphSubTab] = useState(
-    SUB_TAB_PAYOFF_TABLE_VIEW // Default to showing the P&L Matrix
-  );
-  const [matrixTableInterval, setMatrixTableInterval] = useState(
-    String(PAYOFF_TABLE_INTERVAL_STEP || 50)
-  );
-  const [showPercentageInMatrix, setShowPercentageInMatrix] = useState(false);
+const [activePayoffGraphSubTab, setActivePayoffGraphSubTab] = useState<string>(SUB_TAB_PAYOFF_TABLE_VIEW);
+const [matrixTableInterval, setMatrixTableInterval] = useState<string>(String(PAYOFF_TABLE_INTERVAL_STEP || 50));
+const [showPercentageInMatrix, setShowPercentageInMatrix] = useState<boolean>(false);
+
 
   const {
     displaySpotForSlider,
@@ -62,7 +116,7 @@ const PayoffChartSection = ({
     daysToTargetDisplay,
   } = usePayoffChartControls(
     underlyingSpotPrice,
-    liveInstrumentChainArray, // MODIFIED: Pass the instrument array
+    liveInstrumentChainArray,
     currentUnderlying,
     strategyLegs,
     targetDate,
@@ -86,7 +140,7 @@ const PayoffChartSection = ({
   const niftyTargetSliderValue =
     niftyTarget !== "" && !isNaN(parseFloat(niftyTarget))
       ? parseFloat(niftyTarget)
-      : displaySpotForSlider > 0
+      : displaySpotForSlider && displaySpotForSlider > 0
       ? displaySpotForSlider
       : spotSliderMin;
 
@@ -98,16 +152,15 @@ const PayoffChartSection = ({
     []
   );
 
-  // Data for "P&L Table" (main tab) and "Greeks" tab
   const singleScenarioPerLegData = useMemo(
     () =>
       calculateProjectedStrategyData({
         strategyLegs,
         niftyTarget,
         targetDate,
-        getInstrumentByToken, // MODIFIED: Pass new generic getter
+        getInstrumentByToken,
         riskFreeRate,
-        getScenarioIV, // For options
+        getScenarioIV,
         multiplyByLotSize,
         multiplyByNumLots,
       }),
@@ -115,14 +168,14 @@ const PayoffChartSection = ({
       strategyLegs,
       niftyTarget,
       targetDate,
-      getInstrumentByToken, // MODIFIED
+      getInstrumentByToken,
       riskFreeRate,
       getScenarioIV,
       multiplyByLotSize,
       multiplyByNumLots,
     ]
   );
- //console.log(singleScenarioPerLegData)
+
   const payoffMatrixData = useMemo(() => {
     if (!niftyTarget || !targetDate) {
       return [];
@@ -134,12 +187,11 @@ const PayoffChartSection = ({
         displaySpotForSlider,
         targetDateISO: targetDate,
         riskFreeRate,
-        getScenarioIV, // For options
-        getInstrumentByToken, // MODIFIED: Pass new generic getter
+        getScenarioIV,
+        getInstrumentByToken,
         targetInterval: Number(matrixTableInterval),
         underlyingSpotPriceForPercentage: underlyingSpotPrice,
         showPercentage: showPercentageInMatrix,
-        // underlyingSpotPrice // This was duplicated, removed
       });
     } catch (error) {
       console.error(
@@ -155,36 +207,37 @@ const PayoffChartSection = ({
     targetDate,
     riskFreeRate,
     getScenarioIV,
-    getInstrumentByToken, // MODIFIED
+    getInstrumentByToken,
     matrixTableInterval,
     underlyingSpotPrice,
     showPercentageInMatrix,
   ]);
 
-  const handleMainTabChangeWithLog = (tabId) => {
-    if (activeChartTab === "payoffgraph" && tabId !== "payoffgraph") {
-      setActivePayoffGraphSubTab(SUB_TAB_CHART_VIEW);
-    }
-    onChartTabChange(tabId);
-  };
+  const handleMainTabChangeWithLog = useCallback(
+    (tabId: string) => {
+      if (activeChartTab === "payoffgraph" && tabId !== "payoffgraph") {
+        setActivePayoffGraphSubTab(SUB_TAB_CHART_VIEW);
+      }
+      onChartTabChange(tabId);
+    },
+    [activeChartTab, onChartTabChange]
+  );
 
-  const handleSubTabChangeWithLog = (tabId) => {
+  const handleSubTabChangeWithLog = useCallback((tabId: string) => {
     setActivePayoffGraphSubTab(tabId);
-  };
+  }, []);
 
-  const handleIncrementSdDays = () => {
-    // Renamed for clarity
+  const handleIncrementSdDays = useCallback(() => {
     if (sdDays < 365) {
       handleSdDaysChange(sdDays + 1);
     }
-  };
+  }, [sdDays, handleSdDaysChange]);
 
-  const handleDecrementSdDays = () => {
-    // Renamed for clarity
+  const handleDecrementSdDays = useCallback(() => {
     if (sdDays > 0) {
       handleSdDaysChange(sdDays - 1);
     }
-  };
+  }, [sdDays, handleSdDaysChange]);
 
   const tableIntervalOptions = useMemo(
     () => [
@@ -197,7 +250,7 @@ const PayoffChartSection = ({
       { value: "1000", label: "1000" },
       { value: "2000", label: "2000" },
       { value: "3000", label: "3000" },
-      { value: "4000", label: "4000" }
+      { value: "4000", label: "4000" },
     ],
     []
   );
@@ -229,7 +282,7 @@ const PayoffChartSection = ({
                     id="matrixTableIntervalSelect"
                     options={tableIntervalOptions}
                     value={matrixTableInterval}
-                    onChange={(val) => setMatrixTableInterval(val)}
+                    onChange={setMatrixTableInterval}
                     className="table-interval-select"
                   />
                   <Checkbox
@@ -300,21 +353,20 @@ const PayoffChartSection = ({
                 </div>
               )}
             </div>
-
             {activePayoffGraphSubTab === SUB_TAB_CHART_VIEW && (
               <PayoffChart
                 strategyLegs={strategyLegs}
-                niftyTargetString={niftyTarget} // Fallback if slider invalid
-                displaySpotForSlider={displaySpotForSlider} // Primary for chart center
+                niftyTargetString={niftyTarget}
+                displaySpotForSlider={displaySpotForSlider}
                 targetDateISO={targetDate}
-                getInstrumentByToken={getInstrumentByToken} // MODIFIED
+                getInstrumentByToken={getInstrumentByToken}
                 riskFreeRate={riskFreeRate}
-                getScenarioIV={getScenarioIV} // For options
-                underlyingSpotPrice={underlyingSpotPrice} // Actual live spot
-                targetInterval={matrixTableInterval} // For chart's internal point generation step
-                showPercentage={showPercentageInMatrix} // If chart should show %
+                getScenarioIV={getScenarioIV}
+                underlyingSpotPrice={underlyingSpotPrice}
+                targetInterval={matrixTableInterval}
+                showPercentage={showPercentageInMatrix}
                 sdDays={sdDays}
-                fullInstrumentChainData={liveInstrumentChainArray} // MODIFIED: Pass instrument array
+                fullInstrumentChainData={liveInstrumentChainArray}
                 multiplier={multiplier}
               />
             )}
@@ -327,7 +379,6 @@ const PayoffChartSection = ({
             )}
           </div>
         )}
-
         {activeChartTab === "p&ltable" && (
           <>
             <div className="greeks-controls-header">
@@ -378,7 +429,6 @@ const PayoffChartSection = ({
           </div>
         )}
       </div>
-      {/* Global Controls ... (existing unchanged) ... */}
       <div className="global-chart-controls">
         <div className="target-controls-row spot-controls">
           <div className="input-slider-group">
@@ -392,7 +442,7 @@ const PayoffChartSection = ({
                 icon="-"
                 onClick={() => {
                   const cv = parseFloat(
-                    niftyTarget || displaySpotForSlider || 0
+                    niftyTarget || String(displaySpotForSlider) || "0"
                   );
                   onNiftyTargetChange(
                     (cv - (SPOT_SLIDER_STEP || 50)).toFixed(2)
@@ -403,10 +453,10 @@ const PayoffChartSection = ({
                 id="spotTargetInput"
                 type="number"
                 value={niftyTargetInputValue}
-                onChange={(value) => onNiftyTargetChange(value)}
+                onChange={onNiftyTargetChange}
                 className="target-value-input"
                 placeholder={
-                  displaySpotForSlider > 0
+                  displaySpotForSlider && displaySpotForSlider > 0
                     ? displaySpotForSlider.toFixed(2)
                     : "Target"
                 }
@@ -417,7 +467,7 @@ const PayoffChartSection = ({
                 icon="+"
                 onClick={() => {
                   const cv = parseFloat(
-                    niftyTarget || displaySpotForSlider || 0
+                    niftyTarget || String(displaySpotForSlider) || "0"
                   );
                   onNiftyTargetChange(
                     (cv + (SPOT_SLIDER_STEP || 50)).toFixed(2)
@@ -473,14 +523,14 @@ const PayoffChartSection = ({
                 id="hiddenDateTargetInput"
                 type="datetime-local"
                 value={targetDate}
-                onChange={(val) => onTargetDateChange(val)}
+                onChange={onTargetDateChange}
                 className="hidden-date-input"
               />
             </div>
             <input
               type="range"
-              min="0"
-              max="100"
+              min={0}
+              max={100}
               value={dateSliderValue}
               onChange={handleDateSliderChange}
               className="global-target-slider date-slider"
@@ -517,4 +567,5 @@ const PayoffChartSection = ({
     </section>
   );
 };
+
 export default React.memo(PayoffChartSection);

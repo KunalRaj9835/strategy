@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {LiveOptionDataProvider} from './contexts/LiveOptionDataContext.jsx'
-import StrategyVisualizer from './features/StrategyVisualizer/StrategyVisualizer.jsx'
+import StrategyVisualizer from './features/StrategyVisualizer/StrategyVisualizer.tsx'
 import Text from './features/text.jsx';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 

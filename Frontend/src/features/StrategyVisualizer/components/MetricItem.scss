@@ -1,0 +1,61 @@
+// src/features/StrategyVisualizer/components/MetricItem.scss
+
+.metric-item {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0; // Adjust padding as needed
+  // border-bottom: 1px solid #efefef; // Optional separator
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .metric-label {
+    font-size: 0.8rem; // Smaller label
+    color: #6c757d; // Greyish color for label
+    margin-bottom: 4px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px; // Space between label and addon/icon
+
+    .metric-label-addon {
+      margin-left: auto; // Pushes addon to the right if label is short
+    }
+  }
+
+  .metric-value {
+    font-size: 0.95rem; // Slightly larger value
+    font-weight: 600;
+    color: #212529; // Darker color for value
+    margin: 0;
+
+    &.profit-value {
+      color: #28a745; // Green for profit
+    }
+
+    &.loss-value {
+      color: #dc3545; // Red for loss
+    }
+  }
+
+  .metric-sub-value {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-top: 2px;
+  }
+
+  .info-icon {
+    margin-left: 4px;
+    cursor: help;
+    color: #007bff; // Blue for info icon, or match theme
+    font-size: 0.8em; // Slightly smaller than label text
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px; // Fixed size for alignment
+    height: 14px;
+    // border: 1px solid #007bff; // Optional border
+    // border-radius: 50%;
+  }
+}

@@ -1,0 +1,138 @@
+// src/features/StrategyVisualizer/sections/NewStrategySection.module.scss
+
+// Import shared variables for consistent styling across the application
+@import '@/styles/_variables.scss';
+
+// --- Root Container ---
+.svNewStrategySection {
+  display: flex;
+  flex-direction: column;
+  background-color: $background-white;
+  border: 1px solid $border-color;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+}
+
+// --- Header Section ---
+.newStrategyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid $border-color;
+  background-color: $background-light;
+
+  h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+}
+
+.tradeActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.selectAllTradesCheckbox {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.clearTradesBtn, .resetPricesBtn {
+  font-size: 13px;
+  color: $text-light;
+  text-decoration: none;
+  &:hover {
+    color: $primary-color;
+    text-decoration: underline;
+  }
+}
+
+.resetPricesIcon {
+  font-size: 16px;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+// --- Legs Editor ---
+.strategyLegsEditor {
+  padding: 0 10px;
+}
+
+.legHeaderRow {
+  display: grid;
+  grid-template-columns: 30px 70px 1fr 1fr 1fr 80px 110px 100px;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: $text-light;
+  text-transform: uppercase;
+  border-bottom: 1px solid $border-color;
+
+  span {
+    text-align: center;
+  }
+  span:nth-child(3), span:nth-child(4) {
+    text-align: left;
+  }
+}
+
+.legHeaderCheckbox {
+  justify-self: center;
+}
+
+.noLegsPlaceholder {
+  text-align: center;
+  padding: 40px 20px;
+  color: $text-light;
+  font-style: italic;
+  font-size: 14px;
+}
+
+// --- Summary Footer ---
+.strategyLegSummary {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid $border-color;
+  background-color: $background-light;
+
+  label, span {
+    font-weight: 500;
+  }
+
+  input {
+    padding: 4px 6px;
+    border: 1px solid $border-color;
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  .pnlPositive { color: $primary-color; font-weight: 600; }
+  .pnlNegative { color: $sell-color; font-weight: 600; }
+
+  .infoIcon {
+    margin-left: 4px;
+    cursor: help;
+    color: $text-light;
+  }
+}
+
+// --- Actions Footer ---
+.strategyActionsFooter {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-top: 1px solid $border-color;
+
+  .sellBtnFooter {
+    margin-left: auto;
+    margin-right: 10px;
+  }
+}

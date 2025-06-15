@@ -1,0 +1,59 @@
+// src/components/ui/ToggleButtonGroup/ToggleButtonGroup.module.scss
+
+// Import shared variables for consistent styling across the application
+@import '@/styles/_variables.scss';
+
+// --- Root Container ---
+// Uses Flexbox to create the segmented control effect.
+.toggleButtonGroup {
+  display: inline-flex;
+  border: 1px solid $border-color;
+  border-radius: 6px;
+  overflow: hidden; // Ensures the child border-radius corners are clipped
+  background-color: $background-light;
+
+  // --- Disabled State ---
+  &.disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    
+    .toggleButton {
+      pointer-events: none; // Prevent clicks on individual buttons
+    }
+  }
+}
+
+// --- Individual Toggle Button ---
+.toggleButton {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: $text-light;
+  background-color: transparent;
+  border: none;
+  border-right: 1px solid $border-color; // Creates the vertical separator
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+
+  // Remove the border from the last button in the group
+  &:last-child {
+    border-right: none;
+  }
+
+  // --- Hover State (when not selected) ---
+  &:not(.selected):hover {
+    background-color: darken($background-light, 3%);
+  }
+
+  // --- Selected State ---
+  // The primary visual indicator for the active button.
+  &.selected {
+    background-color: $background-white;
+    color: $primary-color;
+    font-weight: 600;
+    // A subtle shadow to make it pop, a common modern UI practice.
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    z-index: 1; // Ensure the selected button's shadow is on top
+  }
+}

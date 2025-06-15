@@ -1,0 +1,72 @@
+// src/features/StrategyVisualizer/sections/SummaryMetricsSection.module.scss
+
+// Import shared variables for consistent styling across the application
+@import '@/styles/_variables.scss';
+
+// --- Root Container ---
+.svSummaryMetricsSection {
+  padding: 12px;
+  background-color: $background-white;
+  border: 1px solid $border-color;
+  border-top: none;
+  border-bottom: none;
+}
+
+// --- Grid Layout ---
+.metricsGrid {
+  display: grid;
+  // Creates a 3-column layout, with each column taking up equal space.
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px 24px; // 16px row gap, 24px column gap
+}
+
+// --- Row Wrapper ---
+// Each row contains a set of metrics.
+.metricRow {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; // Space between MetricItem components in the same column
+
+  // This modifier is for the last row which only contains a single metric.
+  &.singleMetric {
+    grid-column: 1 / -1; // Span all three columns
+    max-width: calc(33.33% - 16px); // Occupy the width of one column
+  }
+}
+
+// --- Value-based Styling Classes ---
+// These classes are passed as props to the MetricItem component.
+// It is the responsibility of MetricItem to apply these styles.
+.profitValue {
+  color: $primary-color;
+  font-weight: 600;
+}
+
+.lossValue {
+  color: $sell-color;
+  font-weight: 600;
+}
+
+.unlimitedValue {
+  color: $secondary-color; // A distinct color for "Unlimited"
+  font-weight: 600;
+  font-style: italic;
+}
+
+.neutralValue {
+  color: $text-color;
+}
+
+// --- Reward/Risk Toggle Button ---
+// Provides specific styling for the toggle button to ensure it aligns well.
+.rewardRiskToggleBtn {
+  // Overrides button default padding to be more compact
+  padding: 4px 8px !important;
+  font-size: 11px !important;
+  min-height: auto !important;
+  height: auto !important;
+  font-weight: 600;
+  align-self: flex-start; // Align to the start of the flex container (MetricItem)
+  margin-top: -4px; // Nudge it up slightly for better alignment with the label
+  margin-bottom: 4px; // Add space below
+}

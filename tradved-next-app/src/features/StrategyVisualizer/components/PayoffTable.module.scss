@@ -1,0 +1,88 @@
+// src/features/StrategyVisualizer/components/PayoffTable.module.scss
+
+// Import shared variables for consistent styling across the application
+@import '@/styles/_variables.scss';
+
+// --- Root Container ---
+// Ensures the table is horizontally scrollable on smaller screens if needed.
+.payoffTableContainer {
+  overflow-x: auto;
+  border-radius: 6px;
+  border: 1px solid $border-color;
+}
+
+// --- Table Styling ---
+.payoffTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background-color: $background-white;
+
+  th, td {
+    padding: 10px 14px;
+    text-align: right; // Right-align all cells by default for numeric data
+    border-bottom: 1px solid $border-color;
+    white-space: nowrap;
+  }
+
+  th {
+    background-color: $background-light;
+    font-weight: 600;
+    color: $text-light;
+    font-size: 12px;
+    text-transform: uppercase;
+    position: sticky;
+    top: 0; // Makes the header stick when scrolling vertically
+    z-index: 1;
+  }
+
+  // First column (Target Price) should be left-aligned and slightly bolder.
+  th:first-child, td:first-child {
+    text-align: left;
+    font-weight: 500;
+  }
+
+  // Zebra-striping for better readability
+  tbody tr:nth-child(even) {
+    background-color: lighten($background-light, 2%);
+  }
+
+  tbody tr:hover {
+    background-color: darken($background-light, 3%);
+  }
+}
+
+// --- Row & Cell Value Modifiers ---
+.highlightedRow {
+  background-color: #e3f2fd !important; // A light blue to highlight the current target
+  font-weight: 600;
+
+  td {
+    color: $text-color;
+  }
+}
+
+.profitValue {
+  color: $primary-color;
+  font-weight: 600;
+}
+
+.lossValue {
+  color: $sell-color;
+  font-weight: 600;
+}
+
+// --- Placeholder for Empty State ---
+.payoffTablePlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: $text-light;
+  font-style: italic;
+  background-color: $background-light;
+  border-radius: 6px;
+}

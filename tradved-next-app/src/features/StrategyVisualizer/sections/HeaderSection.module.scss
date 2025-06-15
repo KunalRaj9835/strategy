@@ -1,0 +1,56 @@
+// src/features/StrategyVisualizer/sections/HeaderSection.module.scss
+
+// Import shared variables for consistent styling across the application
+@import '@/styles/_variables.scss';
+
+// --- Root Container ---
+// A modern header with a subtle gradient, soft shadow, and generous padding for a premium feel.
+.svHeaderSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px; // Increased vertical padding for more impact
+  margin-bottom: 24px; // More space below the header
+
+  // Subtle gradient adds depth and looks more polished than a flat color.
+  background: linear-gradient(180deg, lighten($background-light, 2%), $background-white 70%);
+  
+  // A softer, more modern border and shadow.
+  border: 1px solid darken($border-color, 3%);
+  border-radius: 12px; // A slightly larger radius for a softer look
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+
+  h1 {
+    font-size: 32px; // Slightly larger for more presence
+    font-weight: 800; // Bolder for a stronger statement
+    letter-spacing: -0.025em; // Tightens up letters for a cleaner headline look
+    margin: 0 0 12px 0;
+
+    // Creates a subtle text gradient for a premium, modern visual effect.
+    background: linear-gradient(45deg, darken($text-color, 10%), $text-color);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  p {
+    font-size: 18px; // Larger, more readable tagline
+    color: $text-light;
+    max-width: 600px; // Keeps the description from becoming too wide on large screens
+    margin: 0 0 24px 0; // Increased margin to give the button more space
+    line-height: 1.6;
+  }
+}
+
+// --- Specific Button Styling ---
+// This class can be used to add specific overrides to the Button component if needed.
+.demoVideosBtn {
+  // Most styling is handled by the Button component's `variant="secondary"`.
+  // We can add a subtle shadow on hover for extra visual feedback.
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+  }
+}

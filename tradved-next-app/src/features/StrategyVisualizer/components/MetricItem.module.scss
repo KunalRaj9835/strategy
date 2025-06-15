@@ -1,0 +1,67 @@
+// src/features/StrategyVisualizer/components/MetricItem.module.scss
+
+// Import shared variables for consistent styling across the application
+@import '@/styles/_variables.scss';
+
+// --- Root Container ---
+// A flex container to layout the metric's elements vertically.
+.metricItem {
+  display: flex;
+  flex-direction: column;
+}
+
+// --- Metric Label Styling ---
+// The `h4` tag containing the label text and optional icon/addon.
+.metricLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px; // Space between label, addon, and icon
+  font-size: 13px;
+  font-weight: 500;
+  color: $text-light;
+  margin: 0 0 4px 0; // Reset margin and add a small space below
+  text-transform: capitalize;
+}
+
+// --- Addon Styling ---
+// A container for any child elements (like buttons) passed to the component.
+.metricLabelAddon {
+  display: inline-flex;
+  align-items: center;
+}
+
+// --- Info Icon Styling ---
+// The small 'i' icon for providing extra information on hover.
+.infoIcon {
+  display: inline-block;
+  font-size: 14px;
+  color: darken($text-light, 10%);
+  cursor: help;
+  line-height: 1;
+  transition: color 0.2s ease-in-out;
+
+  &:hover {
+    color: $primary-color;
+  }
+}
+
+// --- Main Value Styling ---
+// The primary numeric or text value of the metric.
+.metricValue {
+  font-size: 20px;
+  font-weight: 600;
+  color: $text-color;
+  margin: 0;
+  line-height: 1.2;
+  // Allows for smooth number changes in financial dashboards
+  font-variant-numeric: tabular-nums; 
+}
+
+// --- Sub-Value Styling ---
+// An optional, smaller value displayed below the main value.
+.metricSubValue {
+  font-size: 12px;
+  color: $text-light;
+  margin: 2px 0 0 0;
+  font-weight: 400;
+}

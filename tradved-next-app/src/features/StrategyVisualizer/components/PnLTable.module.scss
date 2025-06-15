@@ -1,0 +1,102 @@
+// src/features/StrategyVisualizer/components/PnLTable.module.scss
+
+// Import shared variables for consistent styling across the application
+@import '@/styles/_variables.scss';
+
+// --- Root Container ---
+.pnlTableContainer {
+  overflow-x: auto;
+  border-radius: 6px;
+  border: 1px solid $border-color;
+
+  // Class applied when there is no data to display
+  &.noDataMessage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    padding: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: $text-light;
+    font-style: italic;
+    background-color: $background-light;
+  }
+}
+
+// --- Table Styling ---
+.pnlTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background-color: $background-white;
+
+  th, td {
+    padding: 10px 14px;
+    text-align: right; // Right-align all cells by default for numeric data
+    border-bottom: 1px solid $border-color;
+    white-space: nowrap;
+  }
+
+  th {
+    background-color: $background-light;
+    font-weight: 600;
+    color: $text-light;
+    font-size: 12px;
+    text-transform: uppercase;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  // First column (Instrument) should be left-aligned and bolder
+  th:first-child, td:first-child {
+    text-align: left;
+    font-weight: 500;
+    min-width: 180px;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: lighten($background-light, 2%);
+  }
+
+  tbody tr:hover {
+    background-color: darken($background-light, 3%);
+  }
+}
+
+// --- Total Row Styling ---
+.pnlTotalRow {
+  background-color: darken($background-light, 2%);
+  font-weight: 600;
+
+  td {
+    border-top: 2px solid darken($border-color, 10%);
+  }
+
+  .projectedLabel {
+    font-weight: 400;
+    font-style: italic;
+    color: $text-light;
+    margin-left: 6px;
+  }
+
+  .infoIcon {
+    font-size: 14px;
+    color: darken($text-light, 10%);
+    cursor: help;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+}
+
+// --- P&L Value Modifiers ---
+.pnlValuePositive {
+  color: $primary-color;
+  font-weight: 600;
+}
+
+.pnlValueNegative {
+  color: $sell-color;
+  font-weight: 600;
+}

@@ -1,0 +1,16 @@
+// src/features/StrategyVisualizer/StrategyVisualizer.module.scss
+
+// Import shared variables for consistent styling across the application
+@import '@/styles/_variables.scss';
+
+// --- Root Container ---
+// The main wrapper for the entire Strategy Visualizer application.
+// It uses a flexbox column layout to stack the sections vertically.
+.strategyVisualizerContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; // Consistent vertical spacing between all major sections
+  max-width: 1200px; // A reasonable max-width for readability on large screens
+  margin: 0 auto; // Center the container on the page
+  padding: 20px;
+}

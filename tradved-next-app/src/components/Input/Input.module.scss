@@ -1,0 +1,80 @@
+// src/components/ui/Input/Input.module.scss
+
+// Import shared variables for consistent styling across the application
+@import '@/styles/_variables.scss';
+
+// --- Root Container ---
+// The .inputGroup acts as a relative container to position the icon inside.
+.inputGroup {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+// --- The Input Element ---
+.inputElement {
+  width: 100%;
+  padding: 10px 14px;
+  font-family: $font-family;
+  font-size: 14px;
+  color: $text-color;
+  background-color: $background-white;
+  border: 1px solid $border-color;
+  border-radius: 6px;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+  // Placeholder styling
+  &::placeholder {
+    color: lighten($text-light, 10%);
+    opacity: 1;
+  }
+
+  // Focus state for a clean, modern highlight
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.15);
+  }
+
+  // Styles when an icon is present
+  &.withIcon {
+    padding-left: 40px; // Make space for the icon
+  }
+}
+
+// --- Icon Styling ---
+.inputIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: $text-light;
+  pointer-events: none; // Allows clicks to pass through to the input
+  font-size: 16px;
+  line-height: 1;
+}
+
+// --- State Modifiers on the Root Container ---
+// When the input is focused, the icon can also change color.
+.inputGroup:focus-within .inputIcon {
+  color: $primary-color;
+}
+
+.readonly {
+  .inputElement {
+    background-color: $background-light;
+    cursor: default;
+    &:focus {
+      box-shadow: none; // No focus ring on read-only inputs
+    }
+  }
+}
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  .inputElement {
+    background-color: $background-light;
+  }
+}

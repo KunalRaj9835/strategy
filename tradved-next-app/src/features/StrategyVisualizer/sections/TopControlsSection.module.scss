@@ -1,0 +1,39 @@
+// src/features/StrategyVisualizer/sections/TopControlsSection.module.scss
+
+// Import shared variables for consistent styling across the application
+@import '@/styles/_variables.scss';
+
+// --- Root Container ---
+// Uses Flexbox to align all control items in a single row.
+.svTopControlsSection {
+  display: flex;
+  align-items: center;
+  gap: 12px; // Consistent spacing between control groups
+  padding: 12px;
+  background-color: $background-light;
+  border: 1px solid $border-color;
+  border-radius: 8px 8px 0 0; // Curves the top corners to match the main container
+}
+
+// --- Toggle Button Group ---
+// Specific styling for the Instrument Type toggle if needed.
+// Most styling is handled by the ToggleButtonGroup component itself.
+.instrumentTypeToggle {
+  flex-shrink: 0; // Prevents the toggle from shrinking on smaller screens
+}
+
+// --- Search Input ---
+// The search input will grow to fill the available space.
+.searchInput {
+  flex-grow: 1; // Allows the input to take up the remaining space
+  max-width: 400px; // Sets a reasonable maximum width for larger screens
+}
+
+// --- Actions Container ---
+// Pushes the action buttons to the far right of the container.
+.topActions {
+  display: flex;
+  gap: 8px; // Space between action buttons
+  margin-left: auto; // This is the key to aligning the group to the right
+  flex-shrink: 0;
+}

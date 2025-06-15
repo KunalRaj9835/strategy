@@ -1,0 +1,92 @@
+// src/components/ui/Checkbox/Checkbox.module.scss
+
+// Import shared variables for consistent styling across the application
+@import '@/styles/_variables.scss';
+
+// --- Root Container ---
+// The <label> element acts as the main container for accessibility and layout.
+.checkboxLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 14px;
+  color: $text-color;
+
+  // --- Disabled State ---
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+  }
+}
+
+// --- The Hidden Native Checkbox ---
+// We hide the default browser checkbox but keep it functional for accessibility
+// and state management. Its state (:checked) will control our custom checkbox's appearance.
+.nativeCheckbox {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  cursor: pointer;
+}
+
+// --- The Custom-Styled Checkbox Box ---
+// This is the visible box that the user interacts with visually.
+.customCheckbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0; // Prevents the box from shrinking
+  width: 18px;
+  height: 18px;
+  border: 2px solid $border-color;
+  border-radius: 4px;
+  background-color: $background-white;
+  transition: all 0.2s ease-in-out;
+  
+  // The checkmark icon itself, created with a pseudo-element.
+  // It is hidden by default.
+  &::after {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 8px;
+    border: solid $background-white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) translateY(-1px);
+    opacity: 0;
+    transition: opacity 0.1s ease-in-out;
+  }
+}
+
+// --- Hover State ---
+// Provides visual feedback when the user hovers over the checkbox.
+.checkboxLabel:hover:not(.disabled) .customCheckbox {
+  border-color: darken($border-color, 15%);
+}
+
+// --- Focus State ---
+// Provides a clear focus indicator for keyboard navigation and accessibility.
+.nativeCheckbox:focus-visible + .customCheckbox {
+  outline: 2px solid lighten($primary-color, 30%);
+  outline-offset: 2px;
+}
+
+// --- Checked State ---
+// When the hidden native checkbox is checked, we style our custom box.
+.nativeCheckbox:checked + .customCheckbox {
+  background-color: $primary-color;
+  border-color: $primary-color;
+
+  // Make the checkmark visible.
+  &::after {
+    opacity: 1;
+  }
+}
+
+// --- Label Text ---
+.checkboxText {
+  line-height: 1.2;
+}

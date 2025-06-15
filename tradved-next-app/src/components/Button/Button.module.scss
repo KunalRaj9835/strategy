@@ -1,0 +1,139 @@
+// src/components/ui/Button/Button.module.scss
+
+// Import shared variables for consistent styling across the application
+@import '@/styles/_variables.scss';
+
+// --- Base Button Styling ---
+// This is the foundation for all button variants.
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-family: $font-family;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+
+  &:focus-visible {
+    outline: 2px solid lighten($primary-color, 30%);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+// --- Variant Styles ---
+
+// Primary: Solid, high-emphasis action
+.primary {
+  background-color: $primary-color;
+  color: $background-white;
+  border-color: $primary-color;
+
+  &:hover:not(:disabled) {
+    background-color: darken($primary-color, 8%);
+    border-color: darken($primary-color, 8%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(darken($primary-color, 10%), 0.2);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+}
+
+// Secondary: Outlined or less emphasis
+.secondary {
+  background-color: $background-white;
+  color: $text-color;
+  border-color: $border-color;
+
+  &:hover:not(:disabled) {
+    background-color: $background-light;
+    border-color: darken($border-color, 10%);
+    color: $primary-color;
+  }
+}
+
+// Tertiary: Subtle, often used for secondary actions
+.tertiary {
+  background-color: transparent;
+  color: $text-color;
+  border-color: transparent;
+
+  &:hover:not(:disabled) {
+    background-color: $background-light;
+  }
+}
+
+// Success: For positive, confirming actions
+.success {
+  background-color: $primary-color;
+  color: $background-white;
+  border-color: $primary-color;
+  &:hover:not(:disabled) { background-color: darken($primary-color, 8%); }
+}
+
+// Danger: For destructive actions
+.danger, .sell {
+  background-color: $sell-color;
+  color: $background-white;
+  border-color: $sell-color;
+  &:hover:not(:disabled) { background-color: darken($sell-color, 8%); }
+}
+
+// Icon-only: For buttons that only contain an icon
+.iconOnly {
+  padding: 8px;
+  .btnIcon { margin: 0; } // No margin if it's the only element
+}
+
+// Unstyled: Removes all styling for custom use cases
+.unstyled {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+}
+
+// --- Size Modifiers ---
+.small {
+  padding: 6px 12px;
+  font-size: 13px;
+  gap: 6px;
+  &.iconOnly { padding: 6px; }
+}
+
+.normal {
+  // Uses the base .btn styles
+}
+
+.large {
+  padding: 14px 28px;
+  font-size: 16px;
+}
+
+// --- Icon Styling ---
+.btnIcon {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.1em;
+}

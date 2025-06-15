@@ -1,0 +1,40 @@
+// src/features/StrategyVisualizer/components/StrategyTabs.module.scss
+
+@import '@/styles/_variables.scss';
+
+// The main container for the tab navigation
+.svStrategyTabs {
+  display: flex;
+  gap: 4px; // Small gap between tab buttons
+  border-bottom: 2px solid $border-color;
+  padding: 0 4px;
+}
+
+// Styles for the individual tab buttons. We'll style the Button component via its props,
+// but add a specific class for the 'active' state.
+.tabButton {
+  // Base styles are handled by the Button component itself.
+  // We can add overrides here if needed.
+  border-bottom: none; // Remove bottom border for a clean tab look
+  border-radius: 6px 6px 0 0; // Curve the top corners
+  margin-bottom: -2px; // Pull the button down to overlap the container's border
+  padding: 8px 16px;
+  background-color: transparent;
+  color: $text-light;
+  border: 2px solid transparent; // Reserve space for the active border
+
+  &:hover {
+    background-color: $background-light;
+    color: $text-color;
+  }
+}
+
+// The 'active' state class.
+// This will be applied dynamically in the React component.
+.active {
+  font-weight: 600;
+  color: $primary-color;
+  border-color: $border-color;
+  border-bottom-color: $background-white; // Creates the illusion of being "connected"
+  background-color: $background-white;
+}

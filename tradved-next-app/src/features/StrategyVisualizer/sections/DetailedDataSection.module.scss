@@ -1,0 +1,140 @@
+// src/features/StrategyVisualizer/sections/DetailedDataSection.module.scss
+
+// Import shared variables for consistent styling across the application
+@import '@/styles/_variables.scss';
+
+// --- Root Container ---
+.svDetailedDataSection {
+  display: grid;
+  // Create a flexible 3-column layout that adapts to content
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1.8fr));
+  gap: 1px; // Use a thin gap to simulate borders between columns
+  padding: 1px;
+  background-color: $border-color;
+  border: 1px solid $border-color;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+}
+
+// --- General Column Styling ---
+.dataColumn {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  background-color: $background-white;
+  gap: 12px; // Consistent spacing between elements within a column
+
+  h4 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: $text-color;
+
+    // Tertiary button inside the header for actions like "Reset"
+    button {
+      font-size: 12px;
+      padding: 2px 6px;
+      font-weight: 500;
+    }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid $border-color;
+    }
+
+    th {
+      font-weight: 600;
+      color: $text-light;
+      font-size: 12px;
+    }
+
+    td {
+      color: $text-color;
+    }
+    
+    // Align numeric columns to the right for readability
+    th:not(:first-child), td:not(:first-child) {
+      text-align: right;
+    }
+
+    .noDataRow {
+      text-align: center;
+      color: $text-light;
+      font-style: italic;
+      padding: 20px;
+    }
+  }
+}
+
+// --- Strikewise IVs Column ---
+.strikewiseIvsColumn {
+  .offsetControl {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px;
+    margin-right: 10px;
+    background-color: $background-light;
+    border-radius: 6px;
+    font-size: 13px;
+
+    .offsetValue {
+      font-weight: 600;
+      min-width: 40px;
+      text-align: center;
+    }
+  }
+
+  .ivAdjustCell {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+
+    .individualOffsetValue {
+      font-weight: 500;
+      min-width: 40px;
+      text-align: center;
+    }
+  }
+}
+
+// --- Greeks Summary Column ---
+.greeksSummaryColumn {
+  .greeksSourceLabel {
+    font-size: 12px;
+    font-weight: 400;
+    color: $text-light;
+  }
+  .greeksCheckbox {
+    font-size: 13px;
+  }
+}
+
+// --- Target Day Futures Column ---
+.targetDayFuturesColumn {
+  .futuresPriceDisplay {
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    color: $text-light;
+    margin: 0;
+
+    .priceValue {
+      font-weight: 600;
+      color: $text-color;
+      font-size: 16px;
+      margin-left: 8px;
+    }
+  }
+}

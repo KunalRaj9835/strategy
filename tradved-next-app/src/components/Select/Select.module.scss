@@ -1,0 +1,79 @@
+// src/components/ui/Select/Select.module.scss
+
+// Import shared variables for consistent styling across the application
+@import '@/styles/_variables.scss';
+
+// --- Root Container ---
+// Acts as a relative parent for positioning the custom dropdown arrow.
+.selectContainer {
+  position: relative;
+  width: 100%;
+}
+
+// --- The Select Element ---
+// We hide the default browser appearance to apply our own custom styling.
+.selectInput {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  display: block;
+  width: 100%;
+  padding: 10px 40px 10px 14px; // Right padding makes space for the custom arrow
+  font-family: $font-family;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: $text-color;
+  background-color: $background-white;
+  border: 1px solid $border-color;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+  // Change color when a placeholder is shown (value is empty)
+  &:invalid {
+    color: lighten($text-light, 10%);
+  }
+
+  // Focus state for a clean, modern highlight
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.15);
+  }
+
+  // --- Disabled State ---
+  &:disabled {
+    background-color: $background-light;
+    color: $text-light;
+    cursor: not-allowed;
+    opacity: 0.8;
+  }
+}
+
+// --- Custom Dropdown Arrow ---
+// A pseudo-element on the container creates a custom, stylable arrow.
+.selectContainer::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%) rotate(45deg);
+  width: 7px;
+  height: 7px;
+  border: solid $text-light;
+  border-width: 0 2px 2px 0;
+  pointer-events: none; // Allows clicks to pass through to the select element
+  transition: border-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+// Change arrow color on focus
+.selectContainer:has(.selectInput:focus)::after {
+  border-color: $primary-color;
+}
+
+// Dim arrow in disabled state
+.selectContainer:has(.selectInput:disabled)::after {
+  opacity: 0.5;
+}
